@@ -247,3 +247,4 @@ namespace EpidemicSimulation
         protected int DrawDirection() { if (s_randomizer.Next(0, 100) >= 50) return 1; return -1; }
      }
 }
+
