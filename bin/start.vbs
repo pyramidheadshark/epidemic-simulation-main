@@ -1,0 +1,1 @@
+CreateObject("Wscript.Shell").Run "main_mono_startup.bat", 0, True

@@ -35,6 +35,8 @@ namespace EpidemicSimulation
         public Point? CenterPoint;
         private ChartManager _chartManager;
 
+        public GraphicsDeviceManager GraphicsDeviceManager { get { return _graphics; } }
+
         // Переменные среды
         public Rectangle SimulationRect;
         public static int s_SimulationWidth = 1000;
@@ -89,7 +91,7 @@ namespace EpidemicSimulation
 
         protected override void Initialize()
         {
-            _graphics.PreferredBackBufferWidth = 1000;
+            _graphics.PreferredBackBufferWidth = 1420;
             _graphics.PreferredBackBufferHeight = 1000;
             _graphics.ApplyChanges();
             this.TargetElapsedTime = System.TimeSpan.FromMilliseconds((double)this.SimulationSpeed);
@@ -110,7 +112,7 @@ namespace EpidemicSimulation
             Wall = new Texture2D(GraphicsDevice, 1, 1); Wall.SetData(new Color[] {Color.Cyan});
             _chartManager = new ChartManager(
                 new Vector2(10f, 250f),
-                new Point(250, 250),
+                new Point(400, 400),
                 this,
                 GraphicsDevice
                 );

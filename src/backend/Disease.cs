@@ -26,9 +26,9 @@ namespace EpidemicSimulation
             float? communicability = null,
             float? requiredFieldIntersetion = null)
         {
-            Disease.Lethality = lethality ?? Disease.Lethality;
-            Disease.Duration = duration ?? Disease.Duration;
-            Disease.Communicability = communicability ?? Disease.Communicability;
+            Disease.Lethality = lethality*0.1f ?? Disease.Lethality;
+            Disease.Duration = duration*0.5f ?? Disease.Duration;
+            Disease.Communicability = communicability*0.05f ?? Disease.Communicability;
             Disease.RequiredFieldIntersetion = requiredFieldIntersetion ?? Disease.RequiredFieldIntersetion;
         }
     }

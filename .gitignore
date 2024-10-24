@@ -1,6 +1,6 @@
-bin/*.exe
 *.csproj
 .sln
+.vs
 
 # User-specific files
 *.rsuser

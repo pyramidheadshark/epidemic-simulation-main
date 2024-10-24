@@ -80,7 +80,7 @@ namespace EpidemicSimulation
             _graph = new Graph(_graphicsDevice, _size);
             _graph.Position = _position;
             _graph.Size = _size;
-            _graph.MaxValue = 50;
+            _graph.MaxValue = 400;
             _graph.Type = Charting.Graph.GraphType.Line;
         }
 
