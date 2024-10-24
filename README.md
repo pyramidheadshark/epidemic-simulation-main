@@ -8,17 +8,23 @@
 - симуляция мультигруппового сообщества.
 Пользователи могут наблюдать за распространением вируса в реальном времени и отслеживать прогресс через графики. В конце симуляции создается файл с логами.
 
-## Доступные команды:
+## Требования:
+- Компилятор C# - требуется `mono`
+- `XNA` или `FNA` фреймворк
+- команда `make` (опционально, для компиляции)
+
+## Запуск на Windows:
+В папке `/bin` запустите `start.vbs`
+
+## Запуск на Linux:
+Введите в консоль `make run`, находясь в директории программы
+
+## Доступные команды make:
 - `make` - собирает весь проект (приложение и тесты)
 - `make compile` - собирает только приложение
 - `make run` - запускает приложение
 - `make test` - компилирует и запускает тесты
 - `make compile_test` - компилирует только тесты
-
-## Требования:
-- Компилятор C# - рекомендуется использовать `mono`
-- `XNA` или `FNA` фреймворк
-- команда `make`
 
 ## Дополнительная информация:
 - Создано в качестве программы для курсовой работы в 2024 г. Никитой Смирновым (РТУ МИРЭА)
@@ -28,29 +34,35 @@
 
 
 # [ ENG ]
-# ABM Virus spreading model
+# Multi-Agent Virus Spread Model
 ## Description:
-This app is a C# implementation of an epidemic simulation using a make system. It utilizes WinForms and XNA (FNA) frameworks for the GUI. You can set various initial parameters such as disease lethality, communicability, duration, and simulated population.
-The app offers three different scenarios to enhance the user experience: 
+This is a C# program that simulates an epidemic using the make build system and the mcs (mono) compiler. It utilizes WinForms and XNA (FNA) frameworks for the graphical user interface. You can configure various initial parameters, such as disease lethality, transmission rate, duration, and population size.
+The application offers three different scenarios to enhance research potential:
 - single community simulation,
-- shopping community simulation,
-- and multigroup community simulation.
-Users can observe the spread of the disease in real-time and track progress through graphs. At the end of the simulation, a file containing logs is generated.
-
-## Available commands
-- `make` - builds the entire project (application and test)
-- `make compile` - builds only the application
-- `make run` - runs the application
-- `make test` - compiles and runs test
-- `make compile_test` - compiles only test
+- point of interest (store) simulation,
+- multi-group community simulation.
+Users can observe the virus spread in real-time and track progress through graphs. At the end of the simulation, a log file is created.
 
 ## Requirements:
-- C# implementation - `mono` recommended
+- C# compiler - `mono` is required
 - `XNA` or `FNA` framework
-- `make` command
+- `make` command (optional, for compilation)
 
-## Additional info:
-- Built as app for term paper in 2024 by Nikita Smirnov (RTU MIREA)
-- [A useful guide](https://www.youtube.com/watch?v=Jbld5ZrW3ls) if you're building in Windows
+## Running on Windows:
+Run `start.vbs` in the `/bin` folder.
+
+## Running on Linux:
+Run `make run` from the program's directory.
+
+## Available make commands:
+- `make` - builds the entire project (application and tests)
+- `make compile` - builds only the application
+- `make run` - runs the application
+- `make test` - compiles and runs tests
+- `make compile_test` - compiles only tests
+
+## Additional Information:
+- Created as a course project in 2024 by Nikita Smirnov (RTU MIREA)
+- [Helpful guide](https://www.youtube.com/watch?v=Jbld5ZrW3ls) for running on Windows
 
 ---
