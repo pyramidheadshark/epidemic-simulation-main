@@ -10,8 +10,9 @@ public class Program : Form
     private ISimulation _simulation;
     private Button _simulationStartingButton;
     private Button _simulationPausingButton;
+    private Button _exitButton;
 
-    private GroupBox _radioButtons;
+    private Panel _radioButtons;
     private RadioButton _singleCommunitySimulationButton = new RadioButton();
     private RadioButton _multiCommunitySimulationButton = new RadioButton();
     private RadioButton _shoppingCommunitySimulationButton = new RadioButton();
@@ -26,84 +27,130 @@ public class Program : Form
     private Label _diseaseDurationLabel;
     private Label _communicabilityLabel;
 
+    [STAThread]
     static public void Main()
     {
-        Application.Run( new Program() );
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+        Application.Run(new Program());
     }
-
-    /**
-        Конструктор настраивает позиции всех компонентов пользовательского интерфейса, 
-        таких как кнопки, радиокнопки, слайдеры и размер главного окна.
-    */
 
     public Program()
     {
-        Size = new Size(500, 800);
+        Size = new Size(500, 700);
         this.FormClosing += new FormClosingEventHandler(Program_FormClosing);
 
         SetUpRadioBoxPanel();
         SetUpSimulationPausingButton();
         SetUpSimulationStartingButton();
         SetUpParametersLabel();
+        SetUpExitButton();
 
-        SetUpAdjustmentComponents(ref _lethalitySlider, ref _lethalityLabel, 3, 1, 100, 100, _lethalitySlider_Scroll);
-        SetUpAdjustmentComponents(ref _diseaseDurationSlider, ref _diseaseDurationLabel, 5, 2, 180, 100, _diseaseDurationSlider_Scroll);
-        SetUpAdjustmentComponents(ref _communicabilitySlider, ref _communicabilityLabel, 7, 1, 100, 135, _communicabilitySlider_Scroll);
-        SetUpAdjustmentComponents(ref _populationSlider, ref _populationLabel, 9, 0, 500, 150, _populationSlider_Scroll);
+        SetUpAdjustmentComponents(
+            ref _lethalitySlider,
+            ref _lethalityLabel,
+            3,
+            1,
+            10,
+            30,
+            _lethalitySlider_Scroll
+        );
+        SetUpAdjustmentComponents(
+            ref _diseaseDurationSlider,
+            ref _diseaseDurationLabel,
+            5,
+            2,
+            60,
+            100,
+            _diseaseDurationSlider_Scroll
+        );
+        SetUpAdjustmentComponents(
+            ref _communicabilitySlider,
+            ref _communicabilityLabel,
+            7,
+            1,
+            100,
+            135,
+            _communicabilitySlider_Scroll
+        );
+        SetUpAdjustmentComponents(
+            ref _populationSlider,
+            ref _populationLabel,
+            9,
+            0,
+            300,
+            150,
+            _populationSlider_Scroll
+        );
     }
 
     private delegate void ScrollMethod(object sender, EventArgs e);
 
-    private delegate void RadioButtonClickMethod(object sender, EventArgs e);
+    private void SetUpExitButton()
+    {
+        _exitButton = new Button();
+        _exitButton.Location = new Point(
+            (this.ClientSize.Width - _exitButton.Width) / 2,
+            _simulationPausingButton.Bottom + 10
+        );
+        _exitButton.Text = "Выход";
+        _exitButton.Click += new EventHandler(ExitButton_Click);
+        Controls.Add(_exitButton);
+    }
 
-    /**
-        Настраивает панель нескольких радиокнопок,
-        которая позволяет пользователю выбрать желаемую сценарий симуляции:
-        сценарий для одного общества, сценарий для мультигруппового общества
-        или сценарий для сценария магазина.
-    */
+    private delegate void RadioButtonClickMethod(object sender, EventArgs e);
 
     private void SetUpRadioBoxPanel()
     {
-        _radioButtons = new GroupBox();
+        _radioButtons = new Panel();
+        _radioButtons.BorderStyle = BorderStyle.FixedSingle;
         _radioButtons.Width = 500;
 
         Label label = new Label();
-        label.Width = 150;
-        label.Height = 50;
+        label.Font = new Font(label.Font.FontFamily, 11, label.Font.Style);
+        label.Width = 300;
+        label.Height = 30;
         label.Location = new Point(5, 10);
         label.Text = "Выберите сценарий:";
 
-
-        SetUpRadioBox(ref _singleCommunitySimulationButton, "Одиночное сообщ.", 0, _singleCommunitySimulationButton_Click);
-        SetUpRadioBox(ref _shoppingCommunitySimulationButton, "Точка интереса", 1, _shoppingCommunitySimulationButton_Click);
-        SetUpRadioBox(ref _multiCommunitySimulationButton, "Мульти сообщ.", 2, _multiCommunitySimulationButton_Click);
-
         _radioButtons.Controls.Add(label);
+
+        SetUpRadioBox(
+            ref _singleCommunitySimulationButton,
+            "Одиночное сообщество",
+            0,
+            _singleCommunitySimulationButton_Click
+        );
+        SetUpRadioBox(
+            ref _shoppingCommunitySimulationButton,
+            "Точка интереса",
+            2,
+            _shoppingCommunitySimulationButton_Click
+        );
+        SetUpRadioBox(
+            ref _multiCommunitySimulationButton,
+            "Мульти сообщество",
+            1,
+            _multiCommunitySimulationButton_Click
+        );
+
         Controls.Add(_radioButtons);
     }
-
-    /**
-        Настраивает одну радиокнопку, давая ей подходящую метку, размер, ширину и позицию, а также давая ей подходящее действие - изменение сцены на указанную.
-    
-        @param radioButton Ссылка на объект радиокнопки, который будет настроен
-        @param label Текстовая метка для радиокнопки
-        @param order Целое число, определяющее порядок среди радиокнопок
-        @param clickEvent Экземпляр класса RadioButtonClickMethod, представляющий действие, которое произойдет после выбора этой радиокнопки
-    */
 
     private void SetUpRadioBox(
         ref RadioButton radioButton,
         string label,
         ushort order,
-        RadioButtonClickMethod clickEvent)
+        RadioButtonClickMethod clickEvent
+    )
     {
         radioButton = new RadioButton();
+
         radioButton.AutoCheck = true;
         radioButton.Text = label;
         radioButton.Height = 50;
-        radioButton.Width = 100;
-        radioButton.Location = new Point( (Simulation.s_SimulationWidth/3) - (order*radioButton.Width), 25);
+        radioButton.Width = 150;
+        radioButton.Location = new Point(50 + order * 150, 50);
 
         if (order == 0u)
             radioButton.Checked = true;
@@ -113,18 +160,6 @@ public class Program : Form
         _radioButtons.Controls.Add(radioButton);
     }
 
-    /**
-        Настраивает пару слайдера и текстовой метки, отображающей текущее значение слайдера.
-    
-        @param slider Ссылка на слайдер
-        @param text Текстовая метка для слайдера
-        @param order Целое число, определяющее порядок среди пар слайдеров и их текстовых меток
-        @param sliderMinValue Минимальное значение, которое может принимать слайдер
-        @param sliderMaxValue Максимальное значение, которое может принимать слайдер
-        @param textLabelWidth Ширина текстовой метки слайдера в пикселях
-        @param sliderScrollMethod Метод, который будет вызываться после использования слайдера
-    */ 
-
     private void SetUpAdjustmentComponents(
         ref TrackBar slider,
         ref Label textLabel,
@@ -132,7 +167,8 @@ public class Program : Form
         int sliderMinValue,
         int sliderMaxValue,
         int textLabelWidth,
-        ScrollMethod sliderScrollMethod)
+        ScrollMethod sliderScrollMethod
+    )
     {
         int elementHeight = 50;
         int posY = order * elementHeight;
@@ -140,16 +176,19 @@ public class Program : Form
         slider = new TrackBar();
         textLabel = new Label();
 
+        // Настраиваем Label
         textLabel.Height = elementHeight;
-        textLabel.Width = textLabelWidth;
+        textLabel.Width = textLabelWidth + 75;
         textLabel.Location = new Point(200, posY + elementHeight);
 
+        // Настраиваем TrackBar
         slider.Minimum = sliderMinValue;
         slider.Maximum = sliderMaxValue;
         slider.Value = (sliderMaxValue + sliderMinValue) / 2;
         slider.Height = elementHeight;
         slider.Width = 400;
         slider.Location = new Point(50, posY);
+        slider.TickFrequency = (sliderMaxValue - sliderMinValue) / 20;
 
         slider.Scroll += new System.EventHandler(sliderScrollMethod);
 
@@ -159,14 +198,12 @@ public class Program : Form
         sliderScrollMethod(null, null);
     }
 
-    /**
-        Настраивает заголовок для параметров эпидемии.
-    */
 
     private void SetUpParametersLabel()
     {
         Label label = new Label();
-        label.Width = 250;
+        label.Font = new Font(label.Font.FontFamily, 11, label.Font.Style);
+        label.Width = 400;
         label.Height = 20;
         label.Location = new Point(5, 110);
         label.Text = "Настройте параметры симуляции:";
@@ -174,9 +211,6 @@ public class Program : Form
         Controls.Add(label);
     }
 
-    /**
-        Настраивает кнопку запуска всей симуляции.
-    */
 
     private void SetUpSimulationStartingButton()
     {
@@ -189,9 +223,6 @@ public class Program : Form
         Controls.Add(_simulationStartingButton);
     }
 
-    /**
-        Настраивает кнопку приостановки всей симуляции.
-    */
 
     private void SetUpSimulationPausingButton()
     {
@@ -204,12 +235,6 @@ public class Program : Form
         Controls.Add(_simulationPausingButton);
     }
 
-    /**
-        Определяет действие, которое произойдет после нажатия кнопки 'Старт',
-        включая настройку параметров заболевания на основе данных,
-        введенных пользователем, и запуск окна симуляции в отдельном потоке,
-        чтобы не блокировать пользовательский интерфейс.
-    */
 
     private void Button_Click(object sender, EventArgs e)
     {
@@ -226,9 +251,6 @@ public class Program : Form
         _simulationThread.Start();
     }
 
-    /**
-        Обрабатывает приостановку и возобновление симуляции через кнопку.
-    */
 
     private void PauseSimulation(object sender, EventArgs e)
     {
@@ -244,81 +266,62 @@ public class Program : Form
                 _simulation.Pause();
                 _simulationPausingButton.Text = "Пауза";
             }
-
         }
     }
-
-    /**
-        Определяет действие, которое произойдет после прокрутки слайдера численности популяции.
-    */
 
     private void _populationSlider_Scroll(object sender, EventArgs e)
     {
         _populationLabel.Text = "Популяция: " + _populationSlider.Value.ToString() + " человек";
     }
 
-    /**
-       Определяет действие, которое произойдет после прокрутки слайдера летальности заболевания.
-    */
 
     private void _lethalitySlider_Scroll(object sender, EventArgs e)
     {
         _lethalityLabel.Text = "Летальность: " + _lethalitySlider.Value.ToString() + "%";
     }
 
-    /**
-        Определяет действие, которое произойдет после прокрутки слайдера продолжительности заболевания.
-    */
-
     private void _diseaseDurationSlider_Scroll(object sender, EventArgs e)
     {
-        _diseaseDurationLabel.Text = "Длительность: " + _diseaseDurationSlider.Value.ToString() + " дней";
+        _diseaseDurationLabel.Text =
+            "Длительность: " + _diseaseDurationSlider.Value.ToString() + " дней";
     }
 
-    /**
-        Определяет действие, которое произойдет после прокрутки слайдера передачи заболевания.
-    */
 
     private void _communicabilitySlider_Scroll(object sender, EventArgs e)
     {
-        _communicabilityLabel.Text = "Коммуникабельность: " + (float) _communicabilitySlider.Value / 4 + "%";
+        _communicabilityLabel.Text =
+            "Коммуникабельность: " + (float)_communicabilitySlider.Value / 4 + "%";
     }
 
-    /**
-        Назначает экземпляр симуляции для общества в качестве текущей симуляции после нажатия на radio box.
-    */
 
     private void _singleCommunitySimulationButton_Click(object sender, EventArgs e)
     {
         if (_simulationThread == null)
-            _simulation = new SingleCommunitySimulation( (uint) _populationSlider.Value);
+            _simulation = new SingleCommunitySimulation((uint)_populationSlider.Value);
     }
 
-    /**
-        Назначает экземпляр симуляции для мультигрупового общества в качестве текущей симуляции после нажатия на radio box.
-    */
 
     private void _multiCommunitySimulationButton_Click(object sender, EventArgs e)
     {
         if (_simulationThread == null)
-            _simulation = new MultigroupCommunitySimulation( 4, (uint) _populationSlider.Value);
+            _simulation = new MultigroupCommunitySimulation(4, (uint)_populationSlider.Value);
     }
 
-    /**
-        Назначает экземпляр симуляции для сценария магазина в качестве текущей симуляции после нажатия на radio box.
-    */
 
     private void _shoppingCommunitySimulationButton_Click(object sender, EventArgs e)
     {
-        Microsoft.Xna.Framework.Point centerPoint = new Microsoft.Xna.Framework.Point(Simulation.s_SimulationWidth/2, Simulation.s_SimulationWidth/2);
-        _simulation = new ShoppingCommunitySimulation(centerPoint, (uint) _populationSlider.Value);
+        Microsoft.Xna.Framework.Point centerPoint = new Microsoft.Xna.Framework.Point(
+            Simulation.s_SimulationWidth / 2,
+            Simulation.s_SimulationWidth / 2
+        );
+        _simulation = new ShoppingCommunitySimulation(centerPoint, (uint)_populationSlider.Value);
     }
 
-    /**
-        Обрабатывает закрытие всей программы. Метод отвечает за сохранение
-        статистики симуляции в внешний файл, закрытие потока симуляции
-        и закрытие пользовательского интерфейса.
-    */
+
+    private void ExitButton_Click(object sender, EventArgs e)
+    {
+        Application.Exit();
+    }
 
     private void Program_FormClosing(Object sender, FormClosingEventArgs e)
     {

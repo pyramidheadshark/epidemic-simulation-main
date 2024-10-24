@@ -11,12 +11,13 @@ namespace EpidemicSimulation
      */
     class ShoppingCommunitySimulation : Simulation, ISimulation
     {
-         /**
-            Конструктор устанавливает популяцию и центральную точку.
+        public bool IsRunning { get; private set; } = false;
+        /**
+           Конструктор устанавливает популяцию и центральную точку.
 
-            @param расположение центральной точки (может быть null)
-            @param population количество людей для симуляции
-         */
+           @param расположение центральной точки (может быть null)
+           @param population количество людей для симуляции
+        */
         public ShoppingCommunitySimulation(Point? centerPoint = null, uint population = 20, uint infected = 2):
          base(population, infected)
         {
@@ -27,6 +28,7 @@ namespace EpidemicSimulation
          */
         public void Start()
         {
+            IsRunning = true;
             Run();
         }
         /**
@@ -40,6 +42,7 @@ namespace EpidemicSimulation
         /**
             Возвращает количество умерших, здоровых и вылечившихся.
         */
+
 
         public Dictionary<string, int> GetSimulationData()
         {

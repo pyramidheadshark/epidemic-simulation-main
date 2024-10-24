@@ -12,6 +12,7 @@ namespace EpidemicSimulation
     */
     class SingleCommunitySimulation : Simulation, ISimulation
     {
+        public bool IsRunning { get; private set; } = false;
         /**
             Конструктор создающий экземпляр класса Simulation, принимая в качестве
             параметра размер популяции.
@@ -28,6 +29,7 @@ namespace EpidemicSimulation
         */
         public void Start()
         {
+            IsRunning = true;
             Run();
         }
         /**
@@ -37,6 +39,7 @@ namespace EpidemicSimulation
         {
             Exit();
         }
+
 
         /**
             Возвращает количество умерших, здоровых и вылечившихся.

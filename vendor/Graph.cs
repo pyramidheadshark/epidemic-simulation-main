@@ -13,26 +13,12 @@ namespace Charting
             Fill
         }
 
-        /// <summary>
-        /// Определяет, будет ли нарисованный график залитым
-        /// </summary>
         public GraphType Type { get; set; }
 
-        /// <summary>
-        /// Нижняя левая позиция графа
-        /// </summary>
         public Vector2 Position { get; set; }
-        /// <summary>
-        /// Размер графа.
-        /// Размер значений графа будет растянут чтобы полностью поместиться в Size.X
-        /// Вертикально значения скаллирированы относительно MaxValue, а максимальные будут равны Size.Y
-        /// </summary>
+
         public Point Size { get; set; }
 
-        /// <summary>
-        /// Определяет вертикальное скаллирование графа
-        /// Значение равное максимальному значению будет отображено в верхней части графа (на Size.Y)
-        /// </summary>
         public float MaxValue { get; set; }
 
         private Vector2 _scale = new Vector2(1.0f, 1.0f);
@@ -64,26 +50,20 @@ namespace Charting
         {
             _effect.World = Matrix.CreateScale(_scale.X, _scale.Y, 1.0f)
                           * Matrix.CreateRotationX(MathHelper.Pi)
-                          * Matrix.CreateTranslation(new Vector3(this.Position, 0));
+                          * Matrix.CreateTranslation(new Vector3(_effect.GraphicsDevice.Viewport.Width - this.Position.X - this.Size.X, this.Position.Y + 75, 0));
         }
 
-        /// <summary>
-        /// Рисует значения в указанном порядке, с указанным цветом для каждого значения
-        /// </summary>
-        /// <param name="values">Значение/цветные пары для рисования, в порядке слева направо</param>
         public void Draw(List<Tuple<float, Color>> values)
         {
             if (values.Count < 2)
                 return;
 
-            // Создает масштабирование (для преобразования) на основе количества точек для рисования
             float xScale = this.Size.X / (float)values.Count;
             float yScale = this.Size.Y / MaxValue;
 
             _scale = new Vector2(xScale, yScale);
             UpdateWorld();
 
-            //Различные списки точек для разных типов графиков
             if (this.Type == GraphType.Line)
             {
                 VertexPositionColor[] pointList = new VertexPositionColor[values.Count];
@@ -99,8 +79,6 @@ namespace Charting
                 VertexPositionColor[] pointList = new VertexPositionColor[values.Count * 2];
                 for (int i = 0; i < values.Count; i++)
                 {
-                    //Вершины создаются таким образом, чтобы треугольники были перевернутыми (обращеными к зрителю). Когда они будут повернуты, они станут передними.
-                    //Это делается для того, чтобы избежать изменения режима отрисовки на CullMode.CullClockwiseFace.
                     pointList[i * 2 + 1] = new VertexPositionColor(new Vector3(i, values[i].Item1 < this.MaxValue ? values[i].Item1 : this.MaxValue, 0), values[i].Item2);
                     pointList[i * 2] = new VertexPositionColor(new Vector3(i, 0, 0), values[i].Item2);
                 }
@@ -109,11 +87,6 @@ namespace Charting
             }
         }
 
-        /// <summary>
-        /// Рисует значения в указанном порядке, в указанном цвете
-        /// </summary>
-        /// <param name="values">Значения для рисования, в порядке слева направо</param>
-        /// <param name="color">>Цвет всего графика</param>
         public void Draw(List<float> values, Color color)
         {
             if (values.Count < 2)
@@ -150,7 +123,7 @@ namespace Charting
 
         void DrawLineList(VertexPositionColor[] pointList)
         {
-            // Индексы обновляются только при изменении количества точек
+
             if (lineListIndices == null || lineListIndices.Length != ((pointList.Length * 2) - 2))
             {
                 lineListIndices = new short[(pointList.Length * 2) - 2];

@@ -18,6 +18,8 @@ namespace EpidemicSimulation
         private List<Rectangle> Obsticles = new List<Rectangle>();
         private int PointCooldown = 400;
 
+        public bool IsRunning { get; private set; } = false;
+
         /**
         Конструктор устанавливает параметры популяции и зараженных.
         Вызывает базовый класс Simulation. Устанавливает особые границы обществ, вероятность посещения и генерирует препятствия
@@ -62,7 +64,11 @@ namespace EpidemicSimulation
         /**
             Запускает симуляцию.
          */
-        public void Start(){ Run(); }
+        public void Start()
+        {
+            IsRunning = true;
+            Run(); 
+        }
         /**
             Закрывает симуляцию.
          */
@@ -71,6 +77,8 @@ namespace EpidemicSimulation
         /**
             Возвращает количество умерших, здоровых и вылечившихся.
         */
+
+
         public Dictionary<string, int> GetSimulationData()
         {
             return GenerateOutputLists();

@@ -9,6 +9,8 @@ namespace EpidemicSimulation
 
     public interface ISimulation
     {
+        bool IsRunning { get; }
+
         void Start();
         void Close();
         void Pause();
